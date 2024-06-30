@@ -62,6 +62,17 @@ def create_accounts():
 ######################################################################
 
 # ... place you code here to LIST accounts ...
+@app.route("/accounts", methods=["GET"])
+def list_accounts():
+    """
+    List all Accounts
+    This endpoint will return all Accounts
+    """
+    app.logger.info("Request to list all Accounts")
+    accounts = Account.all()
+    results = [account.serialize() for account in accounts]
+    app.logger.info("Returning %d accounts", len(results))
+    return jsonify(results), status.HTTP_200_OK
 
 
 ######################################################################
@@ -146,6 +157,7 @@ def delete_account(account_id):
     except Exception as e:
         app.logger.error("Error deleting account: %s", str(e))
         abort(status.HTTP_400_BAD_REQUEST, str(e))
+
 
 
 ######################################################################
