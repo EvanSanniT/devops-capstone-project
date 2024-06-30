@@ -124,7 +124,8 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
-
+    
+    #Read
     def test_get_account(self):
         """It should Read a single Account"""
         account = self._create_accounts(1)[0]
@@ -139,3 +140,30 @@ class TestAccountService(TestCase):
         """It should not Read an Account that is not found"""
         resp = self.client.get(f"{BASE_URL}/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    
+    def test_update_account(self):
+        """It should Update an existing Account"""
+        account = self._create_accounts(1)[0]
+        update_data = {"name": "Updated Name"}
+        print(f"Created Account ID: {account.id}")  # Debugging statement
+        resp = self.client.put(
+            f"{BASE_URL}/{account.id}", json=update_data, content_type="application/json"
+        )
+        print(f"Status Code: {resp.status_code}")  # Debugging statement
+        print(f"Response Data: {resp.get_json()}")  # Debugging statement
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], update_data["name"])
+
+    def test_update_account_not_found(self):
+        """It should not Update an Account that is not found"""
+        update_data = {"name": "Updated Name"}
+        resp = self.client.put(f"{BASE_URL}/0", json=update_data, content_type="application/json")
+        print(f"Status Code: {resp.status_code}")  # Debugging statement
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+
+
+
+
+    
